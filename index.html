@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>My Game</title>
+<style>
+body {
+  margin: 0;
+  padding: 0;
+}
+
+canvas {
+  width: 500px;
+  height: 500px;
+}
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
+// Create the player
+var player = {
+  x: 250,
+  y: 250,
+  speed: 5,
+  jumpHeight: 100,
+  jumpTimer: 0
+};
+
+// Create the enemies
+var enemies = [];
+
+// Draw the game
+function draw() {
+  // Clear the canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Draw the player
+  ctx.fillStyle = "red";
+  ctx.fillRect(player.x, player.y, 50, 50);
+
+  // Draw the enemies
+  for (var i = 0; i < enemies.length; i++) {
+    var enemy = enemies[i];
+    ctx.fillStyle = "blue";
+    ctx.fillRect(enemy.x, enemy.y, 50, 50);
+  }
+}
+
+// Update the game
+function update() {
+  // Move the player
+  player.x += player.speed;
+
+  // Check if the player is jumping
+  if (player.jumpTimer > 0) {
+    player.y -= player.jumpHeight * (player.jumpTimer / 1000);
+    player.jumpTimer -= 1;
+  }
+
+  // Check for collisions with enemies
+  for (var i = 0; i < enemies.length; i++) {
+    var enemy = enemies[i];
+    if (player.x > enemy.x - 50 && player.x < enemy.x + 50 && player.y > enemy.y - 50 && player.y < enemy.y + 50) {
+      // Player is dead!
+      alert("You died!");
+      // TODO: Restart the game
+      // Restart the game by clearing the canvas and redrawing the player
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      draw();
+    }
+  }
+
+  // Check for collisions with the edges of the canvas
+  if (player.y < 0) {
+    player.y = 0;
+  }
+
+  // Check for user input
+  if (window.event && window.event.keyCode == 32) {
+    // Jump!
+    player.jumpTimer = 500;
+  }
+
+  // Draw the game
+  draw();
+}
+
+// Start the game
+setInterval(update, 1000 / 60);
+</script>
+</body>
+</html>
